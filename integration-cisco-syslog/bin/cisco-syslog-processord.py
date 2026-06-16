@@ -2783,14 +2783,7 @@ class CiscoSyslogProcessor:
                         {'Mnemonic': mnemonic},
                         {'ComponentID': self.component_id}
                     ],
-                    'SyslogData': {
-                        'facility': facility,
-                        'cisco_severity': cisco_severity,
-                        'mnemonic': mnemonic,
-                        'message': message,
-                        'category': category,
-                        'platform': parsed_data.get('platform', 'unknown'),
-                        'raw_line': parsed_data.get('raw_line', '')[:500]  # Truncate raw line
+                    'SyslogData': parsed_data.get('raw_line', '')[:500]  # Truncate raw line
                     }
                 }
 
