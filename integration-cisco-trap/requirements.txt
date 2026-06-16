@@ -1,0 +1,13 @@
+# Rapax Cisco Trap Integration Dependencies
+#
+# Core dependencies
+redis>=4.0.0
+opensearch-py>=2.0.0
+pyyaml>=6.0
+requests>=2.28.0
+cryptography>=40.0.0
+
+# SNMP dependencies
+# Note: pysnmp 4.4.12 is pinned for classic synchronous hlapi compatibility
+pysnmp==4.4.12
+pyasn1==0.4.8

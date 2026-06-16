@@ -1,0 +1,6 @@
+# Rapax Zabbix Webhook Integration Dependencies
+redis>=4.0.0
+requests>=2.28.0
+opensearch-py>=2.0.0
+cryptography>=41.0.0
+flask>=2.0.0

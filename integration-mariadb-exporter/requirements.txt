@@ -1,0 +1,10 @@
+# Rapax MariaDB Data Exporter Dependencies
+
+# Redis client
+redis>=4.5.0
+
+# MariaDB/MySQL connector
+mysql-connector-python>=8.0.0
+
+# HTTP client for credentials API
+requests>=2.28.0

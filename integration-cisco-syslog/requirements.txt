@@ -1,0 +1,16 @@
+# Cisco Syslog Integration Requirements
+
+# Redis client for alert/log streaming
+redis>=4.0.0
+
+# OpenSearch client for direct indexing (if needed)
+opensearch-py>=2.0.0
+
+# YAML configuration parsing
+pyyaml>=6.0
+
+# HTTP requests (for potential API calls)
+requests>=2.28.0
+
+# Cryptography for credential decryption
+cryptography>=40.0.0

@@ -1,0 +1,18 @@
+# Rapax Unifi SNMP Integration Dependencies
+
+# Redis client
+redis>=4.0.0
+
+# OpenSearch client
+opensearch-py>=2.0.0
+
+# SNMP library (pinned for classic synchronous hlapi)
+pysnmp==4.4.12
+pyasn1==0.4.8
+
+# Configuration and utilities
+pyyaml>=6.0
+requests>=2.28.0
+
+# Cryptography for credential decryption
+cryptography>=40.0.0

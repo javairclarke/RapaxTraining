@@ -1,0 +1,24 @@
+# Rapax OSTicket Integration Container Python Dependencies
+# Dependencies for the osticket-agentd daemon
+
+# Redis client for alert storage and streaming
+redis>=5.0.0
+
+# YAML configuration parsing
+PyYAML>=6.0
+
+# Cryptography for credentials handling
+cryptography==41.0.7
+
+# OpenSearch client (required by rapax.py shared library)
+opensearch-py>=2.4.0
+
+# HTTP requests for OSTicket API
+requests==2.31.0
+urllib3<2.0
+
+# MySQL client for API key IP self-correction on startup
+PyMySQL>=1.0.0
+
+# Timezone support
+pytz>=2023.3

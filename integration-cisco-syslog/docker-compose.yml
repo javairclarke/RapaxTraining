@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  cisco-syslog:
+    image: ghcr.io/ennissh/integration-cisco-syslog:latest
+    container_name: integration-cisco-syslog
+    hostname: integration-cisco-syslog
+    restart: unless-stopped
+    environment:
+      - REDIS_HOST=rapax-redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - SYSLOG_FILE=/var/log/messages
+      - COMPONENT_ID=cisco-syslog-1
+      - LOG_LEVEL=INFO
+      - RAPAXHOME=/opt/rapax
+      - PYTHONPATH=/opt/rapax/lib
+    volumes:
+      # Mount syslog file from host (read-only)
+      - /var/log/messages:/var/log/messages:ro
+      # Mount rapax library
+      - ${RAPAXHOME:-/opt/rapax}/lib:/opt/rapax/lib:ro
+      # Mount rapax config
+      - ${RAPAXHOME:-/opt/rapax}/etc:/opt/rapax/etc:ro
+      # Mount logs directory
+      - ${RAPAXHOME:-/opt/rapax}/logs:/opt/rapax/logs
+      # Mount machine-id for credential decryption
+      - /etc/machine-id:/etc/machine-id:ro
+    networks:
+      - rapax-network
+    depends_on:
+      - rapax-redis
+    healthcheck:
+      test: ["CMD", "/healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  rapax-network:
+    external: true
+    name: rapax-dev-network

@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  unifi-snmp:
+    image: ghcr.io/ennissh/integration-unifi-snmp:latest
+    container_name: rapax-unifi-snmp
+    hostname: rapax-unifi-snmp
+    restart: unless-stopped
+    networks:
+      - rapax-dev-network
+    volumes:
+      # Logs directory (read-write)
+      - ${RAPAXHOME:-/opt/rapax}/logs:/opt/rapax/logs
+      # Rapax library (read-only)
+      - ${RAPAXHOME:-/opt/rapax}/lib:/opt/rapax/lib:ro
+      # Configuration and credentials (read-only)
+      - ${RAPAXHOME:-/opt/rapax}/etc:/opt/rapax/etc:ro
+      # Machine ID for credential decryption
+      - /etc/machine-id:/etc/machine-id:ro
+    environment:
+      # Redis connection
+      - REDIS_HOST=${REDIS_HOST:-rapax-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      # SNMP polling configuration
+      - SNMP_POLL_INTERVAL=${SNMP_POLL_INTERVAL:-60}
+      - SNMP_TIMEOUT=${SNMP_TIMEOUT:-1000}
+      - SNMP_WORKERS=${SNMP_WORKERS:-5}
+      - CONFIG_UPDATE_INTERVAL=${CONFIG_UPDATE_INTERVAL:-3600}
+      # Component identification
+      - COMPONENT_ID=${COMPONENT_ID:-unifi-snmp-1}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    healthcheck:
+      test: ["/healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+networks:
+  rapax-dev-network:
+    external: true
