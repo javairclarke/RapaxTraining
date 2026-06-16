@@ -83,7 +83,7 @@ SYSLOG_DEFINITIONS = {
     'LINK-3-UPDOWN': {
         'facility': 'LINK',
         'mnemonic': 'UPDOWN',
-        'cisco_severity': 3,
+        'cisco_severity': 4,
         'description': 'Interface link state changed',
         'category': 'link-state',
         'actionable': True,
