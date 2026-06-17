@@ -6,7 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Configuration
 IMAGE_NAME="integration-slack-notification-exporter"
-REGISTRY="ghcr.io/${GHCR_USER:-citus-cloud}"
+REGISTRY="ghcr.io/${GHCR_USER:-javairclarke}"
 VERSION="latest"
 LOCAL_ONLY=false
 NO_CACHE=""

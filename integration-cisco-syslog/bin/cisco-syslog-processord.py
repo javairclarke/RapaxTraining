@@ -2750,6 +2750,8 @@ class CiscoSyslogProcessor:
             category = definition.get('category', 'system')
             description = definition.get('description', message)
             actionable = definition.get('actionable', False)
+            # fix severity from definition
+            cisco_severity = definition.get('cisco_severity', cisco_severity)
 
             # Determine if this is a clear message
             is_clear = self._is_clear_message(definition, message)
@@ -2784,7 +2786,6 @@ class CiscoSyslogProcessor:
                         {'ComponentID': self.component_id}
                     ],
                     'SyslogData': parsed_data.get('raw_line', '')[:500]  # Truncate raw line
-                    }
                 }
 
                 try:
