@@ -39,11 +39,7 @@ RAPAX_HOME = os.getenv('RAPAXHOME', '/opt/rapax')
 sys.path.insert(0, os.path.join(RAPAX_HOME, 'lib'))
 
 # Import rapax library
-try:
-    import rapax
-except ImportError:
-    print("ERROR: rapax library not found. Ensure RAPAXHOME/lib is in PYTHONPATH")
-    sys.exit(1)
+import rapax
 
 SOURCE = 'integration-juniper-trap'
 VERSION = '1.0.0'
