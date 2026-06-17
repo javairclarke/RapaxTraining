@@ -27,18 +27,18 @@ import signal
 import logging
 import argparse
 import threading
+import requests
 from datetime import datetime
+from urllib3.exceptions import InsecureRequestWarning
+
+requests.urllib3.disable_warnings(InsecureRequestWarning)
 
 # Environment setup
 RAPAX_HOME = os.getenv('RAPAXHOME', '/opt/rapax')
 sys.path.insert(0, os.path.join(RAPAX_HOME, 'lib'))
 
 # Import rapax library
-try:
-    import rapax
-except ImportError:
-    print("ERROR: rapax library not found. Ensure RAPAXHOME/lib is in PYTHONPATH")
-    sys.exit(1)
+import rapax
 
 from pysnmp.hlapi import (
     getCmd, SnmpEngine, CommunityData, UdpTransportTarget,
@@ -60,15 +60,12 @@ VERSION = '1.0.0'
 # --- Core OIDs (device must respond to be considered pollable) ---
 # Example: Frogfoot / standard MIB-2 memory and load OIDs
 CORE_OIDS = {
-        CORE_OIDS = {
-    'sysUpTime': '1.3.6.1.2.1.1.3.0',  # Uptime
     'cpuLoad': '1.3.6.1.4.1.890.1.1.1.1.1.1.1.0',  # CPU Load
+    'sysUpTime': '1.3.6.1.2.1.1.3.0',  # Uptime
     'memoryUsage': '1.3.6.1.4.1.890.1.1.1.1.1.1.2.0',  # Memory Usage
-    'interfaceInOctets': '1.3.6.1.2.1.2.2.1.10',  # Interface In Octets
-    'interfaceOutOctets': '1.3.6.1.2.1.2.2.1.16',  # Interface Out Octets
-        }
+}
 
-        OPTIONAL_OID_GROUPS = {
+OPTIONAL_OID_GROUPS = {
     'temperature': {
     'temperatureSensor': '1.3.6.1.4.1.890.1.1.1.1.1.2.0',  # Temperature Sensor
         },
@@ -81,54 +78,20 @@ CORE_OIDS = {
     'storage': {
     'storageUsage': '1.3.6.1.4.1.890.1.1.1.1.1.5.0',  # Storage Usage
         },
-        }
+}
 
-        METRIC_DISPLAY_NAMES = {
-    'sysUpTime': 'System Uptime (seconds)',
+METRIC_DISPLAY_NAMES = {
     'cpuLoad': 'CPU Load (%)',
+    'sysUpTime': 'System Uptime (seconds)',
     'memoryUsage': 'Memory Usage (%)',
-    'interfaceInOctets': 'Interface Incoming Traffic (Octets)',
-    'interfaceOutOctets': 'Interface Outgoing Traffic (Octets)',
     'temperatureSensor': 'Temperature (°C)',
     'fanStatus': 'Fan Status',
     'psuStatus': 'Power Supply Unit Status',
     'storageUsage': 'Storage Usage (%)',
-        }
-
 }
 
 # The first OID in CORE_OIDS is used to probe whether a device is pollable.
 PROBE_OID = list(CORE_OIDS.values())[0]
-
-# --- Optional OID groups (probed once, skipped if unsupported) ---
-OPTIONAL_OID_GROUPS = {
-    'temperature': {
-        'cpuTemp':   '1.3.6.1.4.1.4413.1.1.43.1.8.1.5.1.0',
-        'boardTemp': '1.3.6.1.4.1.4413.1.1.43.1.15.1.2',
-        'phyTemp':   '1.3.6.1.4.1.4413.1.1.43.1.15.1.3',
-    },
-    'fan': {
-        'fanSpeed':     '1.3.6.1.4.1.4413.1.1.43.1.6.1.4',
-        'fanDutyLevel': '1.3.6.1.4.1.4413.1.1.43.1.6.1.5',
-    },
-}
-
-# Human-readable metric display names
-METRIC_DISPLAY_NAMES = {
-    'memTotal':     'Memory Total (KB)',
-    'memFree':      'Memory Free (KB)',
-    'memBuffer':    'Memory Buffer (KB)',
-    'memCache':     'Memory Cache (KB)',
-    'loadAvg1':     'Load Average 1min',
-    'loadAvg5':     'Load Average 5min',
-    'loadAvg15':    'Load Average 15min',
-    'cpuTemp':      'CPU Temperature (C)',
-    'boardTemp':    'Board Temperature (C)',
-    'phyTemp':      'PHY Temperature (C)',
-    'fanSpeed':     'Fan Speed (RPM)',
-    'fanDutyLevel': 'Fan Duty Level (%)',
-}
-
 
 # =============================================================================
 # SNMP Poller
@@ -262,8 +225,7 @@ class IntegrationZyxelSnmp:
         query = {
             "query": {"match_all": {}},
             "sort": [{"lastSeen": {"order": "desc"}}],
-            "size": 10000,
-            "collapse": {"field": "deviceName.keyword"},
+            "size": 10000
         }
 
         try:
